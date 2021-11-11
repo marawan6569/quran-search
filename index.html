@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="css/bootstrap.rtl.css">
+
+
+        <title>مرحبا بالعالم!</title>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
+            *{
+                font-family: cairo;
+            }
+            .verse{
+                font-family: Amiri;
+                font-size: x-large;
+            }
+
+            .btn-outline-primary{
+                color: #209CEE;
+            border-color: #209CEE;
+            }
+            .btn-outline-primary:hover{
+                background: #209CEE;
+            }
+        </style>
+    </head>
+    <body>
+
+
+    <nav class="navbar navbar-light bg-light mb-3 p-md-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="imgs/icon.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                محرك بحث القرءان الكريم
+            </a>
+
+<!--            <li class="nav-item dropdown">-->
+<!--                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                    حجم الخط-->
+<!--                </a>-->
+<!--                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--                    <li><a class="dropdown-item" >صغير</a></li>-->
+<!--                    <li><a class="dropdown-item" >عاي</a></li>-->
+<!--                    <li><a class="dropdown-item" >متوسط</a></li>-->
+<!--                    <li><a class="dropdown-item" >كبير</a></li>-->
+<!--                    <li><a class="dropdown-item" >كبير جدا</a></li>-->
+<!--                </ul>-->
+<!--            </li>-->
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="input-group mb-5">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <button type="button" class="btn btn-outline-primary" id="search-action" data-search-method-num="1">بحث عن</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item search-method" data-search-method-num="1">بحث عن</a></li>
+                    <li><a class="dropdown-item search-method" data-search-method-num="2" >الأية تبدأ ب</a></li>
+                    <li><a class="dropdown-item search-method" data-search-method-num="3">الأية تنتهي ب</a></li>
+                </ul>
+                <input type="text" class="form-control" id="main-search-bar" placeholder="أدخل  حرف | كلمة | جملة" aria-label="Text input with segmented dropdown button">
+            </div>
+
+            <div class="col-10 m-auto mb-3" id="alerts"></div>
+
+
+            <div class="verses-container" id="verses-container">
+            </div>
+
+
+
+        </div>
+    </div>
+
+<!--    <button type="button"-->
+<!--            class="btn btn-primary btn-floating btn-lg"-->
+<!--            id="btn-back-to-top">-->
+<!--        <i class="fas fa-arrow-up"></i>-->
+<!--    </button>-->
+
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const start = Math.floor(Math.random() * 6235) + 1,
+                end = start + 2
+            $.ajax({
+                type: 'GET',
+                url: 'https://quran-search-api.herokuapp.com/api/getRangeOfVerses/'+ start +'/' + end,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (result){
+                    verses = result.data
+                    for (const id in result.data) {
+                        var verse = verses[id]['verse'],
+                            verseNum = verses[id]['numberInSurah'],
+                            surah = verses[id]['surah'],
+                            surahNum = parseInt(verses[id]['verse_pk'].substring(1,4));
+                        var el = "            <div class=\"card col-10 m-auto mb-3 p-3\">\n" +
+                            "                <div class=\"card-body\">\n" +
+                            "                    <blockquote class=\"blockquote mb-0\">\n" +
+                            "                        <p class=\"verse\">"+ verse +"</p>\n" +
+                            "                        <footer class=\"blockquote-footer\"> سورة: "+ surah +" ("+ surahNum +")&nbsp; | &nbsp;<cite title=\"Source Title\">الأية ("+ verseNum +")</cite></footer>\n" +
+                            "                    </blockquote>\n" +
+                            "                </div>\n" +
+                            "            </div>"
+
+                        $('#verses-container').append(el)
+                    }
+                }
+            });
+        });
+
+        function search(keywords) {
+            if (keywords != '') {
+                $('#verses-container').html('')
+                $('#alerts').html('')
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://quran-search-api.herokuapp.com/api/search/' + keywords,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (result) {
+                        var res_length = result.resultsLength,
+                            verses = result.data;
+                        if (res_length >= 1) {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'تم العثور علي '+ res_length + ' نتيجة بحث عن '+ '\'' + keywords + '\'' +
+                                '</div>')
+                            for (const id in result.data) {
+                                var verse = verses[id]['verse'],
+                                    verseNum = verses[id]['numberInSurah'],
+                                    surah = verses[id]['surah'],
+                                    surahNum = parseInt(verses[id]['verse_pk'].substring(1, 4));
+                                var el = "            <div class=\"card col-10 m-auto mb-3 p-3\">\n" +
+                                    "                <div class=\"card-body\">\n" +
+                                    "                    <blockquote class=\"blockquote mb-0\">\n" +
+                                    "                        <p class=\"verse\">" + verse + "</p>\n" +
+                                    "                        <footer class=\"blockquote-footer\"> سورة: " + surah + " (" + surahNum + ")&nbsp; | &nbsp;<cite title=\"Source Title\">الأية (" + verseNum + ")</cite></footer>\n" +
+                                    "                    </blockquote>\n" +
+                                    "                </div>\n" +
+                                    "            </div>"
+
+                                $('#verses-container').append(el)
+                            }
+                        } else {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'لا توجد نتائج بحث\n' +
+                                '</div>')
+                        }
+                    }
+                });
+            }
+            else {
+                $('#alerts').html('<div class="alert alert-danger" role="alert">\n' +
+                    'من فضلك أدخل حرف أو كلمة أو الجملة التي ستبحث عنها\n' +
+                    '</div>')
+            }
+        };
+
+        function verse_sarts_with(keywords) {
+            if (keywords != '') {
+                $('#verses-container').html('')
+                $('#alerts').html('')
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://quran-search-api.herokuapp.com/api/magicSearch/verseStartsWith/' + keywords,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (result) {
+                        var res_length = result.resultLength,
+                            verses = result.data;
+                        if (res_length >= 1) {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'تم العثور علي '+ res_length + ' من الأيات التي تبدأ ب '+ '\'' + keywords + '\'' +
+                                '</div>')
+                            for (const id in result.data) {
+                                var verse = verses[id]['verse'],
+                                    verseNum = verses[id]['numberInSurah'],
+                                    surah = verses[id]['surah'],
+                                    surahNum = parseInt(verses[id]['verse_pk'].substring(1, 4));
+                                var el = "            <div class=\"card col-10 m-auto mb-3 p-3\">\n" +
+                                    "                <div class=\"card-body\">\n" +
+                                    "                    <blockquote class=\"blockquote mb-0\">\n" +
+                                    "                        <p class=\"verse\">" + verse + "</p>\n" +
+                                    "                        <footer class=\"blockquote-footer\"> سورة: " + surah + " (" + surahNum + ")&nbsp; | &nbsp;<cite title=\"Source Title\">الأية (" + verseNum + ")</cite></footer>\n" +
+                                    "                    </blockquote>\n" +
+                                    "                </div>\n" +
+                                    "            </div>"
+
+                                $('#verses-container').append(el)
+                            }
+                        } else {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'لا توجد نتائج بحث\n' +
+                                '</div>')
+                        }
+                    }
+                });
+            }
+            else {
+                $('#alerts').html('<div class="alert alert-danger" role="alert">\n' +
+                    'من فضلك أدخل حرف أو كلمة أو الجملة التي ستبحث عنها\n' +
+                    '</div>')
+            }
+        };
+
+        function verse_ends_with(keywords) {
+            if (keywords != '') {
+                $('#verses-container').html('')
+                $('#alerts').html('')
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://quran-search-api.herokuapp.com/api/magicSearch/verseEndsWith/' + keywords,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (result) {
+                        var res_length = result.resultLength,
+                            verses = result.data;
+                        if (res_length >= 1) {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'تم العثور علي '+ res_length + ' من الأيات التي تنتهي ب '+ '\'' + keywords + '\'' +
+                                '</div>')
+                            for (const id in result.data) {
+                                var verse = verses[id]['verse'],
+                                    verseNum = verses[id]['numberInSurah'],
+                                    surah = verses[id]['surah'],
+                                    surahNum = parseInt(verses[id]['verse_pk'].substring(1, 4));
+                                var el = "            <div class=\"card col-10 m-auto mb-3 p-3\">\n" +
+                                    "                <div class=\"card-body\">\n" +
+                                    "                    <blockquote class=\"blockquote mb-0\">\n" +
+                                    "                        <p class=\"verse\">" + verse + "</p>\n" +
+                                    "                        <footer class=\"blockquote-footer\"> سورة: " + surah + " (" + surahNum + ")&nbsp; | &nbsp;<cite title=\"Source Title\">الأية (" + verseNum + ")</cite></footer>\n" +
+                                    "                    </blockquote>\n" +
+                                    "                </div>\n" +
+                                    "            </div>"
+
+                                $('#verses-container').append(el)
+                            }
+                        } else {
+                            $('#alerts').html('<div class="alert alert-success" role="alert">\n' +
+                                'لا توجد نتائج بحث\n' +
+                                '</div>')
+                        }
+                    }
+                });
+            }
+            else {
+                $('#alerts').html('<div class="alert alert-danger" role="alert">\n' +
+                    'من فضلك أدخل حرف أو كلمة أو الجملة التي ستبحث عنها\n' +
+                    '</div>')
+            }
+        };
+
+        var searchAction = $('#search-action')
+        $('.search-method').click(function(){
+            searchAction.text($(this).text())
+            searchAction.data('search-method-num', $(this).data('search-method-num'))
+        });
+
+        searchAction.click(function(){
+            var keywords = $('#main-search-bar').val()
+
+            if ($(this).data('search-method-num') == 1){
+
+                search(keywords);
+            }
+            else if ($(this).data('search-method-num') == 2){
+                verse_sarts_with(keywords)
+            }
+            else if ($(this).data('search-method-num') == 3){
+                verse_ends_with(keywords)
+            }
+        });
+
+    </script>
+
+
+    </body>
+</html>
