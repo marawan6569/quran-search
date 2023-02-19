@@ -103,7 +103,7 @@
                 end = start + 2
             $.ajax({
                 type: 'GET',
-                url: 'https://quran-search-api.herokuapp.com/api/getRangeOfVerses/'+ start +'/' + end,
+                url: 'http://quran-api.marwanfazora.com/api/getRangeOfVerses/'+ start +'/' + end,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
 
@@ -135,7 +135,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'https://quran-search-api.herokuapp.com/api/search/' + keywords,
+                    url: 'http://quran-api.marwanfazora.com/api/search/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
@@ -183,7 +183,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'https://quran-search-api.herokuapp.com/api/magicSearch/verseStartsWith/' + keywords,
+                    url: 'http://quran-api.marwanfazora.com/api/magicSearch/verseStartsWith/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
@@ -231,7 +231,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'https://quran-search-api.herokuapp.com/api/magicSearch/verseEndsWith/' + keywords,
+                    url: 'http://quran-api.marwanfazora.com/api/magicSearch/verseEndsWith/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
