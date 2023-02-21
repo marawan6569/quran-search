@@ -100,10 +100,11 @@
     <script>
         $(document).ready(function () {
             const start = Math.floor(Math.random() * 6235) + 1,
-                end = start + 2
+                  end = start + 2,
+                  baseurl = "https://quran-search-api.marwanfazora.com/api";
             $.ajax({
                 type: 'GET',
-                url: 'http://quran-api.marwanfazora.com/api/getRangeOfVerses/'+ start +'/' + end,
+                url: baseurl + '/getRangeOfVerses/'+ start +'/' + end,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
 
@@ -135,7 +136,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'http://quran-api.marwanfazora.com/api/search/' + keywords,
+                    url: baseurl + '/search/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
@@ -183,7 +184,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'http://quran-api.marwanfazora.com/api/magicSearch/verseStartsWith/' + keywords,
+                    url: baseurl + '/magicSearch/verseStartsWith/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
@@ -231,7 +232,7 @@
                 $('#alerts').html('')
                 $.ajax({
                     type: 'GET',
-                    url: 'http://quran-api.marwanfazora.com/api/magicSearch/verseEndsWith/' + keywords,
+                    url: baseurl + '/magicSearch/verseEndsWith/' + keywords,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
 
