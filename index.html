@@ -63,19 +63,20 @@
 
     <div class="container">
         <div class="row">
-
-            <div class="input-group mb-5">
-                <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <button type="button" class="btn btn-outline-primary" id="search-action" data-search-method-num="1">بحث عن</button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item search-method" data-search-method-num="1">بحث عن</a></li>
-                    <li><a class="dropdown-item search-method" data-search-method-num="2" >الأية تبدأ ب</a></li>
-                    <li><a class="dropdown-item search-method" data-search-method-num="3">الأية تنتهي ب</a></li>
-                </ul>
-                <input type="text" class="form-control" id="main-search-bar" placeholder="أدخل  حرف | كلمة | جملة" aria-label="Text input with segmented dropdown button">
-            </div>
+            <form id="search-form">
+              <div class="input-group mb-5">
+                  <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="visually-hidden">Toggle Dropdown</span>
+                  </button>
+                  <button type="submit" class="btn btn-outline-primary" id="search-action" data-search-method-num="1">بحث عن</button>
+                  <ul class="dropdown-menu">
+                      <li><a class="dropdown-item search-method" data-search-method-num="1">بحث عن</a></li>
+                      <li><a class="dropdown-item search-method" data-search-method-num="2" >الأية تبدأ ب</a></li>
+                      <li><a class="dropdown-item search-method" data-search-method-num="3">الأية تنتهي ب</a></li>
+                  </ul>
+                  <input type="text" class="form-control" id="main-search-bar" placeholder="أدخل  حرف | كلمة | جملة" aria-label="Text input with segmented dropdown button">
+              </div>
+          </form>
 
             <div class="col-10 m-auto mb-3" id="alerts"></div>
 
@@ -98,10 +99,10 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.min.js"></script>
     <script>
+        const baseurl = "https://quran-search-api.marwanfazora.com/api";
         $(document).ready(function () {
             const start = Math.floor(Math.random() * 6235) + 1,
-                  end = start + 2,
-                  baseurl = "https://quran-search-api.marwanfazora.com/api";
+                  end = start + 2;
             $.ajax({
                 type: 'GET',
                 url: baseurl + '/getRangeOfVerses/'+ start +'/' + end,
@@ -274,10 +275,17 @@
             }
         };
 
-        var searchAction = $('#search-action')
+        const searchAction = $('#search-action'),
+              searchForm = $('#search-form');
+
         $('.search-method').click(function(){
             searchAction.text($(this).text())
             searchAction.data('search-method-num', $(this).data('search-method-num'))
+        });
+
+        searchForm.submit(ev => {
+            console.log('submit');
+            ev.preventDefault();
         });
 
         searchAction.click(function(){
